@@ -1,7 +1,7 @@
-writer: writer.o
-	gcc writer.c -o writer
+CC = $(CROSS_COMPILE)gcc
 
-
-
+writer: writer.c
+	$(CC) -Wall -Werror -o writer writer.c
+	
 clean:
-	-rm -f *.o Writer
+	rm -f writer *.o
