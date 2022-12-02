@@ -12,31 +12,33 @@ int main(int argc,char *argv[]){
     openlog("writer-log", LOG_PID, LOG_USER);
     if(argc != 3) {printf("Not enough arguments specified");
     syslog(LOG_ERR, "Incorrect number of arguments. Received %d arguments instead of 2", argc-1);
-    return 1;}
-     else{
-         char writerfile[100];
-         char writerstr[100];
-         strcpy(writerfile,argv[1]);
-         strcpy(writerstr,argv[2]);
-         printf("%s", writerfile);}
+    exit (1);}
+    const char *writerfile=argv[1];
+    const char *writerstr=argv[2];
+    //*or alternatively*//
+    //strcpy(writerfile,argv[1]);
+    //strcpy(writerstr,argv[2]);
+    printf("%s", writerfile);
     //opening file to write
     FILE *file_pointer;
     //file_pointer=fopen(argv[1],"w");
-    fd=fd = open(argv[1], O_CREAT | O_WRONLY | O_TRUNC, S_IRUSR | S_IWUSR);
+    fd= open(writerfile, O_CREAT | O_WRONLY | O_TRUNC, S_IRUSR | S_IWUSR);
     if(fd == -1){
-    printf("file not found!");}
-    file_pointer=fdopen(fd,"w");
+    printf("file not found!");
+    exit(1);}
    
     char debug_message[100];
     strcpy(debug_message,"writing");
-    strcpy(debug_message,argv[2]);
+    strcpy(debug_message,writerstr);
     strcpy(debug_message,"to");
-    strcpy(debug_message,argv[1]);
+    strcpy(debug_message,writerfile);
     //void syslog(int priority, const char *format, ...);
     //openlog(system,LOG_DEBUG,LOG_SYSLOG);
+    size_t count;
+    count=strlen(argv[2]);
     syslog(LOG_DEBUG,"%s",debug_message);
-    fprintf(file_pointer,"%s",argv[2]);
-    fclose(file_pointer);
+    write(fd,writerstr,count);
+    close(fd);
     return 0;
     
 }

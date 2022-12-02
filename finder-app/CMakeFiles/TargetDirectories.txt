@@ -1,0 +1,3 @@
+/home/anopheles/Desktop/code/systems_prog/coursera/finder-app/CMakeFiles/writer.dir
+/home/anopheles/Desktop/code/systems_prog/coursera/finder-app/CMakeFiles/edit_cache.dir
+/home/anopheles/Desktop/code/systems_prog/coursera/finder-app/CMakeFiles/rebuild_cache.dir

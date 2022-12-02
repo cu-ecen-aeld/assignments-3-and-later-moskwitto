@@ -1,0 +1,1 @@
+/usr/bin/c++ CMakeFiles/ASS3.dir/first.cpp.o -o ASS3 
