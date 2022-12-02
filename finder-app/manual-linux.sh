@@ -99,7 +99,7 @@ ${CROSS_COMPILE}readelf -a bin/busybox | grep "Shared library"
 
     arm-cortex_a8-linux-gnueabihf-readelf -a bin/busybox | grep "program interpreter"
     arm-cortex_a8-linux-gnueabihf-readelf -a bin/busybox | grep "Shared library"
-    export SYSROOT=$("arm-cortex_a8-linux-gnueabihf-gcc -print-sysroot")
+    SYSROOT=$(${CROSS_COMPILE}gcc --print-sysroot)
     cp -a $SYSROOT/lib/ld-linux-armhf.so.3 lib
     cp -a $SYSROOT/lib/ld-2.22.so lib
     cp -a $SYSROOT/lib/libc.so.6 lib
