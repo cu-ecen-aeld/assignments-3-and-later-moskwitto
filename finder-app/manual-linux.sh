@@ -85,10 +85,8 @@ else
 fi
 
 # TODO: Make and install busybox
-    make distclean
-    make defconfig
-    make ARCH=arm CROSS_COMPILE=arm-unknown-linux-gnueabi-
-    make ARCH=arm CROSS_COMPILE=arm-cortex_a8-linux-gnueabihf- install
+    sudo env "PATH=$PATH" make ARCH=${ARCH} CROSS_COMPILE=${CROSS_COMPILE} CONFIG_PREFIX=${ROOTFS_DIR} install
+	cd ${ROOTFS_DIR}
 
 echo "Library dependencies"
 ${CROSS_COMPILE}readelf -a bin/busybox | grep "program interpreter"
@@ -99,13 +97,28 @@ ${CROSS_COMPILE}readelf -a bin/busybox | grep "Shared library"
 
     arm-cortex_a8-linux-gnueabihf-readelf -a bin/busybox | grep "program interpreter"
     arm-cortex_a8-linux-gnueabihf-readelf -a bin/busybox | grep "Shared library"
-    SYSROOT=$(${CROSS_COMPILE}gcc --print-sysroot)
-    cp -a $SYSROOT/lib/ld-linux-armhf.so.3 lib
-    cp -a $SYSROOT/lib/ld-2.22.so lib
-    cp -a $SYSROOT/lib/libc.so.6 lib
-    cp -a $SYSROOT/lib/libc-2.22.so lib
-    cp -a $SYSROOT/lib/libm.so.6 lib
-    cp -a $SYSROOT/lib/libm-2.22.so lib
+SYSROOT=$(${CROSS_COMPILE}gcc --print-sysroot)
+sudo cp -a ${SYSROOT}/lib64/ld-2.31.so lib64
+sudo cp -a ${SYSROOT}/lib64/libm-2.31.so lib64
+sudo cp -a ${SYSROOT}/lib64/libresolv-2.31.so lib64
+sudo cp -a ${SYSROOT}/lib64/libc-2.31.so lib64
+
+sudo cp -a ${SYSROOT}/lib/ld-linux-aarch64.so.1 lib
+sudo chown root:root lib/ld-linux-aarch64.so.1
+sudo chown -h root:root lib/ld-linux-aarch64.so.1
+
+sudo cp -a ${SYSROOT}/lib64/libm.so.6 lib64
+sudo chown root:root lib64/libm.so.6
+sudo chown -h root:root lib64/libm.so.6
+
+sudo cp -a ${SYSROOT}/lib64/libresolv.so.2 lib64
+sudo chown root:root lib64/libresolv.so.2
+sudo chown -h root:root lib64/libresolv.so.2
+
+sudo cp -a ${SYSROOT}/lib64/libc.so.6 lib64
+sudo chown root:root lib64/libc.so.6
+sudo chown -h root:root lib64/libc.so.6
+
 # TODO: Make device nodes
     cd ~rootfs
     sudo mknod -m 666 dev/null c 1 3
@@ -113,8 +126,8 @@ ${CROSS_COMPILE}readelf -a bin/busybox | grep "Shared library"
 
 # TODO: Clean and build the writer utility
     cmake -S ${FINDER_APP_DIR} -B ${OUTDIR}/rootfs/home
-    make
-
+    make clean
+    make CROSS_COMPILE=${CROSS_COMPILE}
 # TODO: Copy the finder related scripts and executables to the /home directory
 # on the target rootfs
     cp ${FINDER_APP_DIR}/finder.sh ${OUTDIR}/rootfs/home
@@ -126,11 +139,12 @@ ${CROSS_COMPILE}readelf -a bin/busybox | grep "Shared library"
     sudo chown -R root:root *
 
 # TODO: Create initramfs.cpio.gz
-    cd ~rootfs
+    cd ~/rootfs
     find . | cpio -H newc -ov --owner root:root > ../initramfs.cpio
-    gzip initramfs.cpio
+    
+    sudo gzip initramfs.cpio
     mkimage -A arm -O linux -T ramdisk -d initramfs.cpio.gz uRamdisk
+    sudo chown root:root intramfs.cpio.gz
 
-
-    cd ${FINDER_APP_DIR}
-    .${FINDER_APP_DIR}/start-quemu-terminal.sh
+    #cd ${FINDER_APP_DIR}
+    #.${FINDER_APP_DIR}/start-quemu-terminal.sh
