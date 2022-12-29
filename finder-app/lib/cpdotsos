@@ -1,0 +1,8 @@
+#! /bin/sh
+
+for  entry in $(cat so.sos)
+do 
+sudo cp $entry /driveF/tmp/aeld/rootfs/lib
+done
+
+echo ****done****
