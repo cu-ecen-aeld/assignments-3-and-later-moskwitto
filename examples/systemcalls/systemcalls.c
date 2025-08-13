@@ -16,6 +16,10 @@ bool do_system(const char *cmd)
  *   and return a boolean true if the system() call completed with success
  *   or false() if it returned a failure
 */
+    int ret;
+    ret=system(cmd);
+    if(ret != 0 )
+        return false;
 
     return true;
 }
@@ -60,8 +64,34 @@ bool do_exec(int count, ...)
 */
 
     va_end(args);
+    pid_t pid = fork();
+    if (pid < 0) {
+        perror("fork");
+        return false;
+    }
 
-    return true;
+    if (pid == 0) { // Child
+        execv(command[0], command); // Only returns if it fails
+        perror("execv");
+        _exit(EXIT_FAILURE); // exit with error code
+    }
+
+    // Parent
+    int status;
+    if (waitpid(pid, &status, 0) == -1) {
+        perror("waitpid");
+        return false;
+    }
+
+    if (WIFEXITED(status)) {
+        printf("Child exited with status %d\n", WEXITSTATUS(status));
+        return WEXITSTATUS(status) == 0;
+    } else if (WIFSIGNALED(status)) {
+        printf("Child killed by signal %d\n", WTERMSIG(status));
+        return false;
+    }
+
+    return false;
 }
 
 /**
@@ -91,9 +121,48 @@ bool do_exec_redirect(const char *outputfile, int count, ...)
  *   redirect standard out to a file specified by outputfile.
  *   The rest of the behaviour is same as do_exec()
  *
-*/
+*/  
 
     va_end(args);
+    pid_t pid = fork();
+    if (pid < 0) {
+        perror("fork");
+        return false;
+    }
 
-    return true;
+    if (pid == 0) { // Child
+        int fd=open(outputfile, O_WRONLY|O_TRUNC|O_CREAT,0644);
+        if(fd < 0){
+            perror("error opening file");
+            _exit(EXIT_FAILURE);
+        }
+        if (dup2(fd, STDOUT_FILENO) < 0) {
+            perror("dup2");
+            _exit(EXIT_FAILURE);
+        }
+        close(fd);
+        
+        execv(command[0], command); // Only returns if it fails
+        perror("execv");
+        _exit(EXIT_FAILURE); // exit with error code
+    }
+
+    // Parent
+    int status;
+    if (waitpid(pid, &status, 0) == -1) {
+        perror("waitpid");
+        return false;
+    }
+
+    if (WIFEXITED(status)) {
+        printf("Child exited with status %d\n", WEXITSTATUS(status));
+        return WEXITSTATUS(status) == 0;
+    } else if (WIFSIGNALED(status)) {
+        printf("Child killed by signal %d\n", WTERMSIG(status));
+        return false;
+    }
+
+    return false;
 }
+
+
