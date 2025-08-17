@@ -1,0 +1,12 @@
+﻿{
+  "repositoryName": "cu-ecen-aeld/assignments-3-and-later-moskwitto",
+  "pipelineDirectory": "assignments-3-and-later-moskwitto",
+  "workspaceDirectory": "assignments-3-and-later-moskwitto/assignments-3-and-later-moskwitto",
+  "repositories": {
+    "cu-ecen-aeld/assignments-3-and-later-moskwitto": {
+      "repositoryPath": "assignments-3-and-later-moskwitto/assignments-3-and-later-moskwitto",
+      "lastRunOn": "08/13/2025 17:47:32 +00:00"
+    }
+  },
+  "lastRunOn": "08/13/2025 17:48:05 +00:00"
+}
