@@ -1,0 +1,86 @@
+#!/bin/sh
+### BEGIN INIT INFO
+# Provides:          aesdsocket
+# Required-Start:    $network $remote_fs
+# Required-Stop:     $network $remote_fs
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: AESD socket server
+### END INIT INFO
+
+NAME="aesdsocket"
+DAEMON="/usr/bin/aesdsocket"
+DAEMON_ARGS="-d"            # run in daemon mode
+PIDFILE="/var/run/${NAME}.pid"
+
+# Return 0 if running, 1 otherwise
+is_running() {
+    pidof "$DAEMON" >/dev/null 2>&1
+}
+
+start() {
+    if is_running; then
+        echo "$NAME already running"
+        return 0
+    fi
+
+    # Ensure runtime dir exists
+    mkdir -p /var/run
+
+    echo "Starting $NAME..."
+    start-stop-daemon --start --quiet --exec "$DAEMON" -- $DAEMON_ARGS
+    rc=$?
+    if [ $rc -eq 0 ]; then
+        # best-effort PID file (optional; aesdsocket may not create one)
+        pidof "$DAEMON" | awk '{print $1}' > "$PIDFILE" 2>/dev/null || true
+        echo "Started."
+    else
+        echo "Failed to start ($rc)."
+    fi
+    return $rc
+}
+
+stop() {
+    if ! is_running; then
+        echo "$NAME not running"
+        [ -f "$PIDFILE" ] && rm -f "$PIDFILE"
+        return 0
+    fi
+
+    echo "Stopping $NAME..."
+    # Send SIGTERM to allow graceful cleanup in the daemon
+    start-stop-daemon --stop --quiet --exec "$DAEMON" --signal TERM --retry 5
+    rc=$?
+    [ -f "$PIDFILE" ] && rm -f "$PIDFILE"
+    if [ $rc -eq 0 ]; then
+        echo "Stopped."
+    else
+        echo "Failed to stop ($rc)."
+    fi
+    return $rc
+}
+
+status() {
+    if is_running; then
+        echo "$NAME is running"
+        return 0
+    else
+        echo "$NAME is not running"
+        return 3
+    fi
+}
+
+restart() {
+    stop
+    start
+}
+
+case "$1" in
+    start)   start ;;
+    stop)    stop ;;
+    restart) restart ;;
+    status)  status ;;
+    *) echo "Usage: $0 {start|stop|restart|status}"; exit 1 ;;
+esac
+
+exit $?
