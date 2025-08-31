@@ -16,10 +16,13 @@ bool do_system(const char *cmd)
  *   and return a boolean true if the system() call completed with success
  *   or false() if it returned a failure
 */
+<<<<<<< HEAD
     int ret;
     ret=system(cmd);
     if(ret != 0 )
         return false;
+=======
+>>>>>>> assignments-base/assignment6
 
     return true;
 }
@@ -64,6 +67,7 @@ bool do_exec(int count, ...)
 */
 
     va_end(args);
+<<<<<<< HEAD
     pid_t pid = fork();
     if (pid < 0) {
         perror("fork");
@@ -92,6 +96,10 @@ bool do_exec(int count, ...)
     }
 
     return false;
+=======
+
+    return true;
+>>>>>>> assignments-base/assignment6
 }
 
 /**
@@ -121,6 +129,7 @@ bool do_exec_redirect(const char *outputfile, int count, ...)
  *   redirect standard out to a file specified by outputfile.
  *   The rest of the behaviour is same as do_exec()
  *
+<<<<<<< HEAD
 */  
 
     va_end(args);
@@ -166,3 +175,11 @@ bool do_exec_redirect(const char *outputfile, int count, ...)
 }
 
 
+=======
+*/
+
+    va_end(args);
+
+    return true;
+}
+>>>>>>> assignments-base/assignment6

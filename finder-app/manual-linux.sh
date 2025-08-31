@@ -34,6 +34,7 @@ if [ ! -e ${OUTDIR}/linux-stable/arch/${ARCH}/boot/Image ]; then
     echo "Checking out version ${KERNEL_VERSION}"
     git checkout ${KERNEL_VERSION}
 
+<<<<<<< HEAD
     if [ -f ${FINDER_APP_DIR}/conf/.config ]
     then
     echo "Copying existing .config file from ${FINDER_APP_DIR}/conf/"
@@ -62,6 +63,9 @@ if [ ! -e ${OUTDIR}/linux-stable/arch/${ARCH}/boot/Image ]; then
     # Copy output files to outdir
     cd ${OUTDIR}/linux-stable/arch/${ARCH}/boot/
     cp Image ${OUTDIR}
+=======
+    # TODO: Add your kernel build steps here
+>>>>>>> assignments-base/assignment6
 fi
 
 echo "Adding the Image in outdir"
@@ -74,10 +78,14 @@ then
     sudo rm  -rf ${OUTDIR}/rootfs
 fi
 
+<<<<<<< HEAD
 # Create necessary base directories
 mkdir ${OUTDIR}/rootfs
 cd ${OUTDIR}/rootfs
 mkdir -p bin dev etc home lib lib64 proc sbin sys tmp usr var usr/bin usr/lib usr/sbin var/log
+=======
+# TODO: Create necessary base directories
+>>>>>>> assignments-base/assignment6
 
 cd "$OUTDIR"
 if [ ! -d "${OUTDIR}/busybox" ]
@@ -85,22 +93,31 @@ then
 git clone git://busybox.net/busybox.git
     cd busybox
     git checkout ${BUSYBOX_VERSION}
+<<<<<<< HEAD
     # Configure busybox
     make distclean
     make defconfig
+=======
+    # TODO:  Configure busybox
+>>>>>>> assignments-base/assignment6
 else
     cd busybox
 fi
 
+<<<<<<< HEAD
 # Make and install busybox
 make ARCH=${ARCH} CROSS_COMPILE=${CROSS_COMPILE}
 make CONFIG_PREFIX="${OUTDIR}/rootfs" ARCH=${ARCH} CROSS_COMPILE=${CROSS_COMPILE} install
 cd ${OUTDIR}/rootfs
+=======
+# TODO: Make and install busybox
+>>>>>>> assignments-base/assignment6
 
 echo "Library dependencies"
 ${CROSS_COMPILE}readelf -a bin/busybox | grep "program interpreter"
 ${CROSS_COMPILE}readelf -a bin/busybox | grep "Shared library"
 
+<<<<<<< HEAD
 # Add library dependencies to rootfs
 COMPILER_PATH=$(dirname $(which ${CROSS_COMPILE}gcc))
 cd ${COMPILER_PATH}/../${CROSS_COMPILE%-}/libc
@@ -132,3 +149,17 @@ sudo chown -R root:root *
 find . | cpio -H newc -ov --owner root:root > ${OUTDIR}/initramfs.cpio
 cd ${OUTDIR}
 gzip -f initramfs.cpio
+=======
+# TODO: Add library dependencies to rootfs
+
+# TODO: Make device nodes
+
+# TODO: Clean and build the writer utility
+
+# TODO: Copy the finder related scripts and executables to the /home directory
+# on the target rootfs
+
+# TODO: Chown the root directory
+
+# TODO: Create initramfs.cpio.gz
+>>>>>>> assignments-base/assignment6

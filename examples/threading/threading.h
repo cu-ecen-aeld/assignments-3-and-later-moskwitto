@@ -15,10 +15,13 @@ struct thread_data{
      * your thread implementation.
      */
 
+<<<<<<< HEAD
     int wait_to_obtain_ms;
     int wait_to_release_ms; // Time to hold the mutex before releasing it in milliseconds
     pthread_mutex_t *mutex; // Pointer to the mutex to be obtained and released by the thread
 
+=======
+>>>>>>> assignments-base/assignment6
     /**
      * Set to true if the thread completed with success, false
      * if an error occurred.
