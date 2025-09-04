@@ -1,16 +1,15 @@
-# CROSS_COMPILE=aarch64-none-linux-gnu-
-# CC= $(CROSS_COMPILE)gcc
-CC = gcc
+CROSS_COMPILE	?=
+CC		?= $(CROSS_COMPILE)gcc
+OBJ		:= aesdsocket
+#PATH		:= $(PATH):$(PWD)/../compiler/arm-gnu-toolchain-13.3.rel1-x86_64-aarch64-none-linux-gnu/bin
+CGLAGS		?= -g -Wall -Werror -lpthread
 
-all: aesdsocket
+# CROSS_COMPILE=aarch64-none-linux-gnu- make
 
-aesdsocket: aesdsocket.o
-	$(CC) -o aesdsocket aesdsocket.o
+all: $(OBJ)
 
-aesdsocket.o: aesdsocket.c
-	$(CC) -c aesdsocket.c
+$(OBJ): $(OBJ).c clean
+	$(CC) $(CGLAGS) $< -o $@
 
 clean:
-	rm -f aesdsocket.o aesdsocket
-
-.PHONY: all clean
+	rm -f $(OBJ)
