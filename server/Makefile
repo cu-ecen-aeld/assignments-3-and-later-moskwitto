@@ -1,6 +1,6 @@
 # aesdsocket Makefile
 
-CC      ?= gcc
+CC      ?=aarch64-none-linux-gnu-
 CFLAGS  ?= -Wall -Werror -g
 LDFLAGS ?=
 LDLIBS  ?= -lpthread
